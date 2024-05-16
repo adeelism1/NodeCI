@@ -1,0 +1,22 @@
+# a file that configures the CI server whenever we push our code in a CI enviornment
+language: node_js
+node_js:
+  - "8"
+dist: trusty
+services:
+  - mongodb
+  - redis-server
+env:
+  - NODE_ENV=ci
+  - PORT=3000
+cache:
+  directories:
+    - node_modules
+    - client/node_modules
+install: # run these commands
+  - npm install
+  - npm run build # creates a build and compiles all the necessary files in the underlying react and packages them in the build directory and then serves them up with express api
+script:
+  - nohup npm run start & # run server in background mode, and don't kill the server if the shell closes
+  - sleep 3 # wait for server to start, sit around for 3 seconds and wait for server to start
+  - npm run test
